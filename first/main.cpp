@@ -259,8 +259,10 @@ int main()
         //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
         
         //glm::mat4 view;
-        //view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        glm::mat4 view = camera.GetViewMatrix();
+        //view = glm::lookAt(cameraPos, cameraPos + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
+        
+        //glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 view = camera.CalViewMatrix(camera.Position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ourShader.setMat4("view", view);
         
         // 投影矩阵 透视投影

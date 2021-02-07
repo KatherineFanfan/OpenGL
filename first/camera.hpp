@@ -72,6 +72,34 @@ public:
     {
         return glm::lookAt(Position, Position + Front, Up);
     }
+    
+    glm::mat4 CalViewMatrix(glm::vec3 position, glm::vec3 target, glm::vec3 worldUp)
+    {
+         // 1. Position
+        // 2. camera direction  (= -cameraFront)
+        glm::vec3 cameraDirection = glm::normalize(position - target);
+        // right vector
+        glm::vec3 cameraRight = glm::normalize(glm::cross(worldUp, cameraDirection));
+        // up vector
+        glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+        
+        // create lookAt matrix
+        glm::mat4 translation = glm::mat4(1.0f);
+        translation[3][0] = -position.x;
+        translation[3][1] = -position.y;
+        translation[3][2] = -position.z;
+        glm::mat4 rotation = glm::mat4(1.0f);        
+        rotation[0][0] = cameraRight.x;
+        rotation[0][1] = cameraRight.y;
+        rotation[0][2] = cameraRight.z;
+        rotation[1][0] = cameraUp.x;
+        rotation[1][1] = cameraUp.y;
+        rotation[1][2] = cameraUp.z;
+        rotation[2][0] = cameraDirection.x;
+        rotation[2][1] = cameraDirection.y;
+        rotation[2][2] = cameraDirection.z;
+        return rotation * translation;
+    }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
