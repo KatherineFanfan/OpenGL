@@ -138,8 +138,11 @@ int main()
     glEnableVertexAttribArray(0);
     
     unsigned int diffuseMap = loadTexture("container.png");
-//    objectShader.use();
-//    objectShader.setInt("material.diffuse", 0);
+    unsigned int specularMap = loadTexture("container_specular.png");
+    
+    objectShader.use();
+    objectShader.setInt("material.diffuse", 0);
+    objectShader.setInt("material.specular", 1);
     
     while (!glfwWindowShouldClose(window))
     {
@@ -170,6 +173,10 @@ int main()
         // bind diffuse map
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        
+        // bind specular map
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
         
         // render the cube
         glBindVertexArray(VAO);
