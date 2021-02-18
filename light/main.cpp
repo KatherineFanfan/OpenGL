@@ -175,17 +175,31 @@ int main()
         objectShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
         objectShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
         objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        
+        objectShader.setFloat("light.constant", 1.0f);
+        objectShader.setFloat("light.linear", 0.09f);
+        objectShader.setFloat("light.quadratic", 0.032f);
         // material properties
         objectShader.setFloat("material.shininess", 64.0f);
         
-        objectShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        objectShader.setVec3("light.position", lightPos);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         objectShader.setMat4("projection", projection);
         objectShader.setMat4("view", view);
         glm::mat4 model = glm::mat4(1.0f);
-        objectShader.setMat4("model", model);
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            objectShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         // bind diffuse map
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -201,17 +215,13 @@ int main()
         // render the cube
         glBindVertexArray(VAO);
         
-        for(unsigned int i = 0; i < 10; i++)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            objectShader.setMat4("model", model);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        // a lamp object is weird when we only have a directional light, don't render the light object
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lightShader.setMat4("model", model);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
