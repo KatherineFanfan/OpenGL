@@ -192,6 +192,7 @@ int main()
         objectShader.setMat4("projection", projection);
         objectShader.setMat4("view", view);
         glm::mat4 model = glm::mat4(1.0f);
+
         for (unsigned int i = 0; i < 10; i++)
         {
             // calculate the model matrix for each object and pass it to shader before drawing
@@ -203,6 +204,7 @@ int main()
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
         // bind diffuse map
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
