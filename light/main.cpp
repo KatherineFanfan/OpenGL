@@ -182,8 +182,11 @@ int main()
         // material properties
         objectShader.setFloat("material.shininess", 64.0f);
         
-        objectShader.setVec3("light.position", lightPos);
-
+        objectShader.setVec3("light.position", camera.Position);
+        objectShader.setVec3("light.direction", camera.Front);
+        objectShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+        objectShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+        
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         objectShader.setMat4("projection", projection);
